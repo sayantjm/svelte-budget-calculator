@@ -33,7 +33,7 @@
 		};
 		expenses = [expense, ...expenses];
 	}
-
+ 
 
 	// context
 	setContext('remove', removeExpense);
