@@ -5,6 +5,7 @@
     export let addExpense;
     export let isEditing;
     export let editExpense;
+    export let hideForm;
 
     $: isEmpty = !name || !amount;
 
@@ -42,7 +43,7 @@
                 {:else} add expense                                
                 {/if}
         </button>
-        <button type="button" class="close-btn">
+        <button type="button" class="close-btn" on:click={hideForm}>
             close
             <i class="fas fa-times"></i>
         </button>

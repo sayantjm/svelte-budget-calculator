@@ -15,6 +15,7 @@
 	let setName = '';
 	let setAmount = null;
 	let setId = null;
+	let isFormOpen = false;
 
 	// reactive
 	$: isEditing = setId ? true : false;
@@ -42,6 +43,7 @@
 		setId = expense.id;
 		setName = expense.name;
 		setAmount = expense.amount;
+		showForm();
 	}
 	function editExpense({name, amount}) {
 		expenses = expenses.map(item => {
@@ -50,6 +52,15 @@
 		setId = null;
 		setName = '';
 		setAmount = null;
+	}
+	function showForm() {
+		isFormOpen = true;
+	}
+	function hideForm() {
+		isFormOpen = false;
+		setName = '';
+		setAmount = null;
+		setId = null;
 	}
  
 
@@ -61,9 +72,17 @@
 <!-- <style></style> -->
 <!-- CSS/STYLING -->
 
-<NavBar />
+<NavBar {showForm}/>
 <main class="content">
-<ExpenseForm {addExpense} name={setName} amount={setAmount} {isEditing} {editExpense} />
+{#if isFormOpen}
+	<ExpenseForm {addExpense} 
+		name={setName} 
+		amount={setAmount} 
+		{isEditing} 
+		{editExpense} 
+		{hideForm}
+		/>
+{/if}
 	<Totals title="total expenses" {total} />
 	<ExpensesList {expenses} {removeExpense}/>
 	<button type="button" class="btn btn-primary btn-block" on:click={clearExpenses}>
