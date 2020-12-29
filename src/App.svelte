@@ -1,11 +1,12 @@
 <script>
-	import {setContext, onMount } from 'svelte';
+	import {setContext, onMount, afterUpdate } from 'svelte';
 	// components
 	import NavBar from './NavBar.svelte';
 	import Title from './Title.svelte';
 	import ExpensesList from './ExpensesList.svelte';
 	import Totals from './Totals.svelte';
 	import ExpenseForm from './ExpenseForm.svelte';
+	import Modal from './Modal.svelte';
 
 	// data
 	//import expensesData from './expenses';
@@ -27,11 +28,9 @@
 	// functions
 	function removeExpense(id) {
 		expenses = expenses.filter(item => item.id !== id);
-		setLocalStorage();
 	}
 	function clearExpenses() {
 		expenses=[];
-		setLocalStorage();
 	}
 	function addExpense({name, amount}) {
 		let expense = {
@@ -40,7 +39,6 @@
 			amount
 		};
 		expenses = [expense, ...expenses];
-		setLocalStorage();
 	}
 	function setModifiedExpense(id) {
 		let expense = expenses.find(item => item.id === id);
@@ -56,7 +54,6 @@
 		setId = null;
 		setName = '';
 		setAmount = null;
-		setLocalStorage();
 	}
 	function showForm() {
 		isFormOpen = true;
@@ -82,6 +79,10 @@
 		expenses = localStorage.getItem('expenses')?
 			JSON.parse(localStorage.getItem('expenses')):[];
 	});
+
+	afterUpdate(() => {
+		setLocalStorage();
+	});
 </script>
 
 <!-- <style></style> -->
@@ -90,13 +91,15 @@
 <NavBar {showForm}/>
 <main class="content">
 {#if isFormOpen}
-	<ExpenseForm {addExpense} 
-		name={setName} 
-		amount={setAmount} 
-		{isEditing} 
-		{editExpense} 
-		{hideForm}
-		/>
+	<Modal>
+		<ExpenseForm {addExpense} 
+			name={setName} 
+			amount={setAmount} 
+			{isEditing} 
+			{editExpense} 
+			{hideForm}
+			/>
+	</Modal>
 {/if}
 	<Totals title="total expenses" {total} />
 	<ExpensesList {expenses} {removeExpense}/>
